@@ -1,0 +1,37 @@
+.emoji-remove {
+	text-decoration: none;
+	width: 30px;
+  	height: 30px;
+}
+
+.emoji-remove span.emoji-remove-icon {
+	display: block;
+	margin-top: -5px;
+	width: 30px;
+	height: 15px;
+	background-image: none;
+	text-align: center;
+}
+
+.emoji-remove span.emoji-remove-icon:before {
+	content: '\f158';
+	font: 400 20px/1 dashicons;
+	speak: none;
+	vertical-align: middle;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: #666;
+}
+
+.form-table--emoji {
+	counter-reset: emojipinions;
+}
+
+.form-table--emoji tr th label::after {
+  counter-increment: emojipinions;
+  content: counter(emojipinions);
+}
+
+.form-table--emoji input[type="text"] {
+	width: 100%;
+}
