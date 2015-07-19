@@ -1,1 +1,1 @@
-<div id="example"></div>
+<div id="emojipinions" data-post="<?php echo $post->ID; ?>"></div>

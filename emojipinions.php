@@ -171,8 +171,11 @@ class EmojipinionsWordPress {
   }
 
   public function renderFrontend( $content ) {
+    global $post;
 
-    $html = $this->getPartial( $this->plugin->path . 'views/frontend.php' );
+    $html = $this->getPartial( $this->plugin->path . 'views/frontend.php', array(
+      'post' => $post
+    ) );
 
     $content .= $html;
 
