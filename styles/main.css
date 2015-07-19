@@ -1,30 +1,46 @@
 .emoji-remove {
-	text-decoration: none;
-	width: 30px;
-  	height: 30px;
+  text-decoration: none;
+  width: 24px;
+  height: 24px;
+  margin: 0 auto;
+  display: block;
+  background: #DF2F35;
+  border-radius: 5px;
+}
+
+.emoji-remove:hover {
+  background: #b92025;
 }
 
 .emoji-remove span.emoji-remove-icon {
-	display: block;
-	margin-top: -5px;
-	width: 30px;
-	height: 15px;
-	background-image: none;
-	text-align: center;
+  display: block;
+  margin-top: 0px;
+  width: 24px;
+  height: 15px;
+  background-image: none;
+  text-align: center;
+  padding-top: 2px;
 }
 
 .emoji-remove span.emoji-remove-icon:before {
-	content: '\f158';
-	font: 400 20px/1 dashicons;
-	speak: none;
-	vertical-align: middle;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #666;
+  content: '\f158';
+  font: 400 20px/1 dashicons;
+  speak: none;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #FFFFFF;
 }
 
 .form-table--emoji {
-	counter-reset: emojipinions;
+  counter-reset: emojipinions;
+}
+
+.form-table--emoji thead th {
+  text-align: center;
+  background-color: #eaeaea;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .form-table--emoji tr th label::after {
@@ -33,5 +49,16 @@
 }
 
 .form-table--emoji input[type="text"] {
-	width: 100%;
+  width: 100% !important;
+}
+
+.form-table--emoji .emojiPickerIconWrap .emojiPickerIcon {
+  height: 25px !important;
+  width: 25px !important;
+  top: 2px !important;
+}
+
+.emojiPicker div.emoji {
+  width: 1.59em;
+  height: 1.59em;
 }

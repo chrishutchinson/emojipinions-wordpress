@@ -11,6 +11,7 @@
 				var $target = $appendTarget.find('tr:last-of-type');
 				var $clone = $target.clone();
 				$clone.find('input[type="text"]').val('');
+				$clone.find('input[type="number"]').val('1');
 				$appendTarget.append($clone);
 				$clone.removeAttr('id');
 			},
@@ -29,6 +30,11 @@
 			if (action in actions) {
 				actions[action].apply(this, arguments);
 			}
+		});
+
+		$('input[name="_emoji[]"]').emojiPicker({
+			height: '200px',
+			width: '250px'
 		});
 
 	});
