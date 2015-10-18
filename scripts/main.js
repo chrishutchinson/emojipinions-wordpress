@@ -2,8 +2,8 @@
 
 	$(document).on('ready', function() {
 
-		var source = $('#emojipinions__adminHtml').html();
-		var template = Handlebars.compile(source);
+		var adminHtmlSource = $('#emojipinions__adminHtml').html();
+		var adminHtmlTemplate = Handlebars.compile(adminHtmlSource);
 
 
 		var actions = {
@@ -12,7 +12,7 @@
 				e.preventDefault();
 				var $this = $(this);
 				var $appendTarget = $($this.data('append'));
-				var html = template({});
+				var html = adminHtmlTemplate();
 				$appendTarget.append(html);
 				$appendTarget.find('input[name="_emoji[]"]').emojiPicker({
 					height: '200px',

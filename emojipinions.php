@@ -3,7 +3,7 @@
 Plugin Name: Emojipinions
 Plugin URI:  http://www.github.com/chrishutchinson/emojipinions-wordpress
 Description: Add emoji reactions to posts and pages
-Version:     0.0.1
+Version:     1.0.0
 Author:      Chris Hutchinson
 Author URI:  http://www.github.com/chrishutchinson
 License:     GPL2
@@ -25,10 +25,9 @@ class EmojipinionsWordPress {
     $this->plugin->path = plugin_dir_path( __FILE__ ); // Has trailing slash
 
 
+    // Actions
     add_action( 'admin_enqueue_scripts', array( $this, 'adminEnqueueScriptsAndStyles' ) );
     add_action( 'wp_enqueue_scripts', array( $this, 'frontendEnqueueScriptsAndStyles' ) );
-
-    // Actions
     add_action( 'add_meta_boxes', array( $this, 'createMetaBox' ) );
     add_action( 'save_post', array( $this, 'saveMetaBox' ) );
     add_action( 'wp_footer' , array( $this, 'wpFooter' ) );
