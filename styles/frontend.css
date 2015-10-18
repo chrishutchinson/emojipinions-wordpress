@@ -1,0 +1,63 @@
+#emojipinions .emojipinions__wrapper {
+  width: 100%;
+  background: #eaeaea;
+  padding: 20px;
+}
+
+#emojipinions h3 {
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+#emojipinions .emojipinions__list {
+  list-style-type: none;
+  letter-spacing: -4px;
+  line-height: 0;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#emojipinions .emojipinions__list li {
+  display: inline-block;
+  letter-spacing: normal;
+  line-height: 1.2em;
+  margin: 0 10px 10px 0;
+}
+
+#emojipinions .emojipinions__list li:last-of-type {
+  margin-right: 0;
+}
+
+#emojipinions .emojipinions__list li span {
+  display: block;
+  font-size: 2.5em;
+  margin: 0 0 10px;
+}
+
+#emojipinions .emojipinions__list li button[disabled] {
+  color: rgba(0, 0, 0, 0);
+  position: relative;
+}
+
+#emojipinions .emojipinions__list li button[disabled]:before {
+  content: '◐';
+  color: rgba(255, 255, 255, 1);
+  animation: rotating 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50%;
+  display: block;
+  margin-top: -18%;
+  margin-left: -13%;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

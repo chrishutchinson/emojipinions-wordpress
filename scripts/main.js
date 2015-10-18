@@ -2,18 +2,22 @@
 
 	$(document).on('ready', function() {
 
+		var source = $('#emojipinions__adminHtml').html();
+		var template = Handlebars.compile(source);
+
+
 		var actions = {
 
 			addEmoji: function(e) {
 				e.preventDefault();
 				var $this = $(this);
 				var $appendTarget = $($this.data('append'));
-				var $target = $appendTarget.find('tr:last-of-type');
-				var $clone = $target.clone();
-				$clone.find('input[type="text"]').val('');
-				$clone.find('input[type="number"]').val('1');
-				$appendTarget.append($clone);
-				$clone.removeAttr('id');
+				var html = template({});
+				$appendTarget.append(html);
+				$appendTarget.find('input[name="_emoji[]"]').emojiPicker({
+					height: '200px',
+					width: '250px'
+				});
 			},
 
 			removeEmoji: function(e) {

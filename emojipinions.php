@@ -31,9 +31,48 @@ class EmojipinionsWordPress {
     // Actions
     add_action( 'add_meta_boxes', array( $this, 'createMetaBox' ) );
     add_action( 'save_post', array( $this, 'saveMetaBox' ) );
+    add_action( 'wp_footer' , array( $this, 'wpFooter' ) );
+    add_action( 'wp_ajax_emojipinionsVote', array( $this, 'registerVote' ) );
+    add_action( 'wp_ajax_nopriv_emojipinionsVote', array( $this, 'registerVote' ) );
 
     // Filters
     add_filter( 'the_content', array( $this, 'renderFrontend' ) );
+  }
+
+  public function registerVote() {
+    if( !isset ( $_POST[ 'post' ] ) ) {
+      wp_send_json_error( array(
+        'error' => 1
+      ) );
+    }
+
+    $postId = $_POST[ 'post' ];
+    if( empty( $postId ) ) {
+      wp_send_json_error( array(
+        'error' => 2
+      ) );
+    }
+
+    $post = get_post( $postId );
+    if( !$post ) {
+      wp_send_json_error( array(
+        'error' => 3
+      ) );
+    }
+
+    if( !isset( $_POST[ 'emoji' ] ) ) {
+      wp_send_json_error( array(
+        'error' => 4
+      ) );
+    }
+    $emojiKey = $_POST[ 'emoji' ];
+
+    $emojiCount = get_post_meta( $post->ID, '_emoji_count_' . $emojiKey, true );
+    $newEmojiCount = $emojiCount;
+    $newEmojiCount++;
+    update_post_meta( $post->ID, '_emoji_count_' . $emojiKey, $newEmojiCount );
+
+    wp_send_json_success( $newEmojiCount );
   }
 
   /**
@@ -56,10 +95,47 @@ class EmojipinionsWordPress {
 
   public function frontendEnqueueScriptsAndStyles() {
     // CSS
+    wp_enqueue_style( $this->plugin->folder . '-frontend', $this->plugin->url . 'styles/frontend.css', array( ), $this->plugin->version );
 
     // JS
-    wp_enqueue_script( 'react-js', 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js', array(), $this->plugin->version );
-    wp_enqueue_script( $this->plugin->folder . '-frontend', $this->plugin->url . 'scripts/frontend.js', array( 'jquery', 'react-js' ), $this->plugin->version, true );
+    wp_enqueue_script( 'react-js', 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js', array(), $this->plugin->version );
+    wp_enqueue_script( 'babel-core', 'https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser.js', array( 'react-js' ), $this->plugin->version );
+  }
+
+  public function wpFooter() {
+    global $post;
+
+    if( is_single() ) {
+      $emojiCount = get_post_meta( $post->ID, '_emoji_count', true );
+      $emojiMeta = array();
+      $x = 0;
+      while( $x < $emojiCount ) {
+        $emojiMeta[] = array(
+          'emoji' => get_post_meta( $post->ID, '_emoji_' . $x, true ),
+          'count' => get_post_meta( $post->ID, '_emoji_count_' . $x, true ),
+        );
+        $x++;
+      }
+
+      $wpConfig = array(
+        'adminAjax' => admin_url( 'admin-ajax.php' ),
+        'baseUrl' => site_url(),
+        'postId' => $post->ID,
+        'emoji' => array(
+          'count' => $emojiCount,
+          'meta' => $emojiMeta
+        ),
+        'emojipinionsTitle' => apply_filters( 'emojipinions/frontendTitle', __( 'React to this post', $this->plugin->folder ) )
+      );
+    }
+    ?>
+    <script type="text/babel">
+      var wpConfig = <?php echo json_encode($wpConfig); ?>;
+      <?php
+      include $this->plugin->path . 'scripts/frontend.js';
+      ?>
+    </script>
+    <?php
   }
 
   /**
@@ -74,6 +150,7 @@ class EmojipinionsWordPress {
     // JS
     wp_enqueue_script( $this->plugin->folder . '-jquery-emoji-picker', $this->plugin->url . 'vendor/jquery-emoji-picker/js/jquery.emojipicker.js', array( 'jquery' ), $this->plugin->version, true );
     wp_enqueue_script( $this->plugin->folder . '-jquery-emoji-picker-a', $this->plugin->url . 'vendor/jquery-emoji-picker/js/jquery.emojipicker.a.js', array( 'jquery' ), $this->plugin->version, true );
+    wp_enqueue_script( $this->plugin->folder . '-handlebars', $this->plugin->url . 'vendor/handlebars/handlebars.js', array( 'jquery' ), $this->plugin->version );
     wp_enqueue_script( $this->plugin->folder . '-main', $this->plugin->url . 'scripts/main.js', array( 'jquery' ), $this->plugin->version, true );
   }
 
@@ -110,7 +187,8 @@ class EmojipinionsWordPress {
     $this->getPartial($this->plugin->path . 'views/metabox.php', array(
       'emoji' => $emojiMeta,
       'hasEmoji' => ($emojiCount > 0 ? true : false),
-      'emojiNumber' => 1
+      'emojiNumber' => 1,
+      'textDomain' => $this->plugin->folder
     ), false);
   }
 
