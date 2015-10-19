@@ -16,3 +16,7 @@ Add emoji reactions to your WordPress posts! The emojis that readers can react w
 **1.0.0 (18th October 2015)**
 
 - Initial release
+
+### Development
+
+Use [`babel`](https://www.npmjs.com/) to translate `scripts/frontend.js` from JSX into JS (`scripts/frontend.min.js`) that can be run in the browser.

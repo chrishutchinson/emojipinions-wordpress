@@ -30,7 +30,6 @@ class EmojipinionsWordPress {
     add_action( 'wp_enqueue_scripts', array( $this, 'frontendEnqueueScriptsAndStyles' ) );
     add_action( 'add_meta_boxes', array( $this, 'createMetaBox' ) );
     add_action( 'save_post', array( $this, 'saveMetaBox' ) );
-    add_action( 'wp_footer' , array( $this, 'wpFooter' ) );
     add_action( 'wp_ajax_emojipinionsVote', array( $this, 'registerVote' ) );
     add_action( 'wp_ajax_nopriv_emojipinionsVote', array( $this, 'registerVote' ) );
 
@@ -93,16 +92,14 @@ class EmojipinionsWordPress {
   }
 
   public function frontendEnqueueScriptsAndStyles() {
+    global $post;
+
     // CSS
     wp_enqueue_style( $this->plugin->folder . '-frontend', $this->plugin->url . 'styles/frontend.css', array( ), $this->plugin->version );
 
     // JS
     wp_enqueue_script( 'react-js', 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js', array(), $this->plugin->version );
-    wp_enqueue_script( 'babel-core', 'https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser.js', array( 'react-js' ), $this->plugin->version );
-  }
-
-  public function wpFooter() {
-    global $post;
+    wp_enqueue_script( $this->plugin->folder . '-frontend', $this->plugin->url . 'scripts/frontend.min.js', array( 'react-js' ), $this->plugin->version, true );
 
     if( is_single() ) {
       $emojiCount = get_post_meta( $post->ID, '_emoji_count', true );
@@ -126,15 +123,9 @@ class EmojipinionsWordPress {
         ),
         'emojipinionsTitle' => apply_filters( 'emojipinions/frontendTitle', __( 'React to this post', $this->plugin->folder ) )
       );
+    
+      wp_localize_script( $this->plugin->folder . '-frontend', 'wpConfig', $wpConfig );
     }
-    ?>
-    <script type="text/babel">
-      var wpConfig = <?php echo json_encode($wpConfig); ?>;
-      <?php
-      include $this->plugin->path . 'scripts/frontend.js';
-      ?>
-    </script>
-    <?php
   }
 
   /**
@@ -215,12 +206,16 @@ class EmojipinionsWordPress {
 
     // This is a legitimate request, now we can save the data
     if ( isset ( $_POST['_emoji'] ) ) {
+      
       $emojiCount = 0;
       foreach( $_POST['_emoji'] as $key => $emoji ) {
+
         // @TODO: Validate emoji content
         if($this->isValidEmoji($emoji)) {
+
           // Update meta
           if( ! empty( $emoji ) ) {
+
             update_post_meta( $post_id, '_emoji_' . $key, wp_encode_emoji( $emoji ) );
 
             $emojiCountValue = $_POST['_emoji_count'][$key];
@@ -230,8 +225,11 @@ class EmojipinionsWordPress {
 
             update_post_meta( $post_id, '_emoji_count_' . $key, $emojiCountValue );
             $emojiCount++;
+
           }
+
         }
+
       }
 
       // Store the overall count
